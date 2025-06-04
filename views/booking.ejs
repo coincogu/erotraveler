@@ -1,0 +1,338 @@
+<div class="max-w-2xl mx-auto">
+    <div class="glass-effect rounded-xl p-8">
+        <h1 class="text-3xl font-bold text-white mb-6">Book Your Stay at <%= hotel.name %></h1>
+        
+        <div class="mb-8">
+            <img src="<%= hotel.image_url %>" alt="<%= hotel.name %>" class="w-full h-64 object-cover rounded-xl">
+            <div class="mt-4">
+                <p class="text-gray-300"><%= hotel.location %></p>
+                <p class="text-2xl font-bold text-bitcoin mt-2">$<%= hotel.price_per_night %> per night</p>
+            </div>
+        </div>
+
+        <form action="/book" method="POST" class="space-y-6" id="bookingForm">
+            <input type="hidden" name="hotelId" value="<%= hotel.id %>">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-300">Full Name</label>
+                <input type="text" 
+                       name="name" 
+                       id="name" 
+                       required 
+                       class="mt-1 block w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bitcoin">
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-300">Email Address</label>
+                <input type="email" 
+                       name="email" 
+                       id="email" 
+                       required 
+                       class="mt-1 block w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bitcoin">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="checkIn" class="block text-sm font-medium text-gray-300">Check-in Date</label>
+                    <input type="date" 
+                           name="checkIn" 
+                           id="checkIn" 
+                           required 
+                           min="<%= new Date().toISOString().split('T')[0] %>"
+                           class="mt-1 block w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bitcoin">
+                </div>
+                <div>
+                    <label for="checkOut" class="block text-sm font-medium text-gray-300">Check-out Date</label>
+                    <input type="date" 
+                           name="checkOut" 
+                           id="checkOut" 
+                           required 
+                           min="<%= new Date().toISOString().split('T')[0] %>"
+                           class="mt-1 block w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-bitcoin">
+                </div>
+            </div>
+
+            <div class="glass-effect p-4 rounded-lg">
+                <h3 class="text-lg font-medium text-white mb-2">Booking Summary</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-gray-300">
+                        <span>Base price per night:</span>
+                        <span>$<%= hotel.price_per_night %></span>
+                    </div>
+                    <div class="flex justify-between text-gray-300">
+                        <span>Number of nights:</span>
+                        <span id="nights">0</span>
+                    </div>
+                    <div class="border-t border-gray-600 my-2"></div>
+                    <div class="flex justify-between text-white font-semibold">
+                        <span>Total amount:</span>
+                        <span id="totalPrice">$0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-effect p-4 rounded-lg">
+                <h3 class="text-lg font-medium text-white mb-2">Payment Information</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="cryptoCurrency" class="block text-sm font-medium text-gray-300 mb-2">Select Cryptocurrency</label>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="relative">
+                                <input type="radio" 
+                                       name="cryptoCurrency" 
+                                       id="btc" 
+                                       value="btc" 
+                                       class="peer hidden" 
+                                       checked>
+                                <label for="btc" 
+                                       class="block p-4 text-center border border-gray-600 rounded-lg cursor-pointer peer-checked:border-bitcoin peer-checked:bg-bitcoin/10 hover:border-bitcoin/50 transition-colors">
+                                    <span class="block text-lg font-medium text-white">BTC</span>
+                                    <span class="block text-sm text-gray-400">Bitcoin</span>
+                                </label>
+                            </div>
+                            <div class="relative">
+                                <input type="radio" 
+                                       name="cryptoCurrency" 
+                                       id="eth" 
+                                       value="eth" 
+                                       class="peer hidden">
+                                <label for="eth" 
+                                       class="block p-4 text-center border border-gray-600 rounded-lg cursor-pointer peer-checked:border-bitcoin peer-checked:bg-bitcoin/10 hover:border-bitcoin/50 transition-colors">
+                                    <span class="block text-lg font-medium text-white">ETH</span>
+                                    <span class="block text-sm text-gray-400">Ethereum</span>
+                                </label>
+                            </div>
+                            <div class="relative">
+                                <input type="radio" 
+                                       name="cryptoCurrency" 
+                                       id="ltc" 
+                                       value="ltc" 
+                                       class="peer hidden">
+                                <label for="ltc" 
+                                       class="block p-4 text-center border border-gray-600 rounded-lg cursor-pointer peer-checked:border-bitcoin peer-checked:bg-bitcoin/10 hover:border-bitcoin/50 transition-colors">
+                                    <span class="block text-lg font-medium text-white">LTC</span>
+                                    <span class="block text-sm text-gray-400">Litecoin</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm">You will be redirected to our secure payment processor to complete your booking with cryptocurrency.</p>
+                </div>
+            </div>
+
+            <button type="submit" 
+                    id="submitButton"
+                    class="w-full bg-bitcoin text-white px-6 py-3 rounded-lg hover:bg-bitcoin-dark transition duration-300 font-medium flex items-center justify-center">
+                <span id="buttonText">Proceed to Payment</span>
+                <svg id="loadingSpinner" class="hidden animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const hotelId = '<%= hotel.id %>';
+    const basePrice = parseFloat('<%= hotel.price_per_night %>');
+    const checkInInput = document.getElementById('checkIn');
+    const checkOutInput = document.getElementById('checkOut');
+    const nightsElement = document.getElementById('nights');
+    const totalPriceElement = document.getElementById('totalPrice');
+    const bookingForm = document.getElementById('bookingForm');
+    const submitButton = document.getElementById('submitButton');
+    const buttonText = document.getElementById('buttonText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    function validateForm() {
+        if (!checkInInput.value || !checkOutInput.value) {
+            alert('Please select both check-in and check-out dates');
+            return false;
+        }
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+        if (checkOut <= checkIn) {
+            alert('Check-out date must be after check-in date');
+            return false;
+        }
+        return true;
+    }
+
+    function calculateTotal() {
+        if (!checkInInput.value || !checkOutInput.value) {
+            nightsElement.textContent = '0';
+            totalPriceElement.textContent = '$0';
+            return;
+        }
+
+        const checkIn = new Date(checkInInput.value);
+        const checkOut = new Date(checkOutInput.value);
+        
+        if (checkOut > checkIn) {
+            const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+            const total = nights * basePrice;
+            
+            nightsElement.textContent = nights;
+            totalPriceElement.textContent = `$${total.toFixed(2)}`;
+        } else {
+            nightsElement.textContent = '0';
+            totalPriceElement.textContent = '$0';
+        }
+    }
+
+    // Update check-out minimum date when check-in changes
+    checkInInput.addEventListener('change', () => {
+        const checkInDate = new Date(checkInInput.value);
+        const nextDay = new Date(checkInDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        checkOutInput.min = nextDay.toISOString().split('T')[0];
+        
+        // If check-out date is before or equal to check-in date, clear it
+        if (checkOutInput.value && new Date(checkOutInput.value) <= checkInDate) {
+            checkOutInput.value = '';
+        }
+        
+        calculateTotal();
+    });
+
+    // Validate check-out date when it changes
+    checkOutInput.addEventListener('change', () => {
+        const checkInDate = new Date(checkInInput.value);
+        const checkOutDate = new Date(checkOutInput.value);
+        
+        if (checkOutDate <= checkInDate) {
+            alert('Check-out date must be after check-in date');
+            checkOutInput.value = '';
+        }
+        
+        calculateTotal();
+    });
+
+    // Set initial minimum date for check-in to today
+    const today = new Date().toISOString().split('T')[0];
+    checkInInput.min = today;
+    checkOutInput.min = today;
+
+    function setLoading(isLoading) {
+        submitButton.disabled = isLoading;
+        buttonText.textContent = isLoading ? 'Processing...' : 'Proceed to Payment';
+        if (isLoading) {
+            loadingSpinner.classList.remove('hidden');
+            submitButton.classList.add('opacity-75', 'cursor-not-allowed');
+        } else {
+            loadingSpinner.classList.add('hidden');
+            submitButton.classList.remove('opacity-75', 'cursor-not-allowed');
+        }
+    }
+
+    // Handle form submission
+    bookingForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+
+        setLoading(true);
+
+        const selectedCrypto = document.querySelector('input[name="cryptoCurrency"]:checked').value;
+
+        const formData = new FormData(bookingForm);
+        const data = {
+            hotelId: hotelId,
+            name: formData.get('name'),
+            email: formData.get('email'),
+            checkIn: formData.get('checkIn'),
+            checkOut: formData.get('checkOut'),
+            cryptoCurrency: selectedCrypto
+        };
+
+        try {
+            const response = await fetch('/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.invoice_url) {
+                // Show payment details before redirecting
+                const paymentDetails = document.createElement('div');
+                paymentDetails.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                paymentDetails.innerHTML = `
+                    <div class="glass-effect p-8 rounded-xl max-w-md w-full mx-4">
+                        <h3 class="text-xl font-bold text-white mb-4">Payment Details</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center text-gray-300">
+                                <span>Amount to Pay:</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-mono">${result.pay_amount} ${result.pay_currency.toUpperCase()}</span>
+                                    <button onclick="copyToClipboard('${result.pay_amount} ${result.pay_currency.toUpperCase()}')" 
+                                            class="p-1 hover:bg-bitcoin/20 rounded transition-colors" 
+                                            title="Copy amount">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center text-gray-300">
+                                <span>Payment Address:</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-mono text-sm break-all">${result.pay_address}</span>
+                                    <button onclick="copyToClipboard('${result.pay_address}')" 
+                                            class="p-1 hover:bg-bitcoin/20 rounded transition-colors" 
+                                            title="Copy address">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-center mt-6">
+                                <p class="text-gray-300 mb-4">Please send exactly <span class="font-bold">${result.pay_amount} ${result.pay_currency.toUpperCase()}</span> to the address above.</p>
+                                <p class="text-gray-300">Once your payment is confirmed, your booking confirmation will be sent to your email.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(paymentDetails);
+
+                // Add copy to clipboard function
+                window.copyToClipboard = function(text) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        // Show a small tooltip or notification
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'fixed bottom-4 right-4 bg-bitcoin text-white px-4 py-2 rounded-lg shadow-lg z-50';
+                        tooltip.textContent = 'Copied!';
+                        document.body.appendChild(tooltip);
+                        setTimeout(() => tooltip.remove(), 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+                };
+            } else {
+                alert('Booking successful, but no payment URL received.');
+            }
+
+        } catch (error) {
+            console.error('Booking submission error:', error);
+            alert(error.message || 'There was an error processing your booking. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    });
+
+    // Initial calculation on page load if dates are pre-filled
+    if (checkInInput.value && checkOutInput.value) {
+        calculateTotal();
+    }
+</script> 

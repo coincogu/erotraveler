@@ -1,0 +1,32 @@
+{
+  "name": "erotraveler",
+  "version": "1.0.0",
+  "description": "A crypto-based hotel booking MVP web app",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "crypto",
+    "hotel",
+    "booking",
+    "nowpayments",
+    "resend"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.9",
+    "axios": "^1.6.2",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-ejs-layouts": "^2.5.1",
+    "resend": "^2.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

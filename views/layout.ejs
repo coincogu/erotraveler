@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EroTraveler</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f3e8.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bitcoin': '#F7931A',
+                        'bitcoin-dark': '#E67E00',
+                        'crypto-bg': '#0F172A',
+                        'crypto-card': '#1E293B',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(to bottom right, #0F172A, #1E293B);
+        }
+        .glass-effect {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        input, select {
+            background: rgba(30, 41, 59, 0.7) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+        }
+        input:focus, select:focus {
+            border-color: #F7931A !important;
+            box-shadow: 0 0 0 2px rgba(247, 147, 26, 0.2) !important;
+        }
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-100">
+    <nav class="glass-effect sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/" class="text-2xl font-bold text-bitcoin">
+                            EroTraveler
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <%- body %>
+    </main>
+
+    <footer class="glass-effect mt-12">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-gray-400">
+                © 2025 EroTraveler. All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+</html> 
